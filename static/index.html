@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Research AI</title>
+    <style>
+        /* =========================
+           Complete CSS Styles
+           ========================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: #212121;
+            color: #ececec;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Header */
+        .header {
+            background: #2f2f2f;
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid #3e3e3e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: none;
+            background: #3e3e3e;
+            color: #ececec;
+            font-size: 20px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .theme-btn:hover {
+            background: #4a4a4a;
+            transform: scale(1.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Chat Area */
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 2rem 1rem;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Welcome Screen */
+        .welcome {
+            text-align: center;
+            padding: 3rem 1rem;
+        }
+
+        .welcome-icon {
+            font-size: 80px;
+            margin-bottom: 1.5rem;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .welcome-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(135deg, #19c37d, #667eea);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .welcome-subtitle {
+            font-size: 1.2rem;
+            color: #b4b4b4;
+            margin-bottom: 3rem;
+        }
+
+        .example-prompts {
+            display: grid;
+            gap: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .example-prompt {
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            padding: 1.25rem 1.5rem;
+            border-radius: 12px;
+            color: #ececec;
+            font-size: 1rem;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .example-prompt:hover {
+            background: #3e3e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+
+        /* Messages */
+        .messages {
+            display: none;
+        }
+
+        .messages.active {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .message {
+            display: flex;
+            gap: 1rem;
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .message.user .message-avatar {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, #19c37d, #15a870);
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-text {
+            line-height: 1.7;
+            font-size: 1rem;
+        }
+
+        .message-text p {
+            margin-bottom: 1rem;
+        }
+
+        .message-text h1, .message-text h2, .message-text h3 {
+            margin: 1.5rem 0 0.75rem;
+            font-weight: 600;
+        }
+
+        .message-text ul, .message-text ol {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .message-text li {
+            margin: 0.5rem 0;
+        }
+
+        .message-text code {
+            background: #2f2f2f;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "Courier New", monospace;
+        }
+
+        .message-text a {
+            color: #19c37d;
+            text-decoration: none;
+        }
+
+        .message-text a:hover {
+            text-decoration: underline;
+        }
+
+        .message-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .action-btn {
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            color: #b4b4b4;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover {
+            background: #3e3e3e;
+            color: #ececec;
+        }
+
+        .sources {
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #3e3e3e;
+        }
+
+        .sources-title {
+            font-weight: 600;
+            color: #19c37d;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+        }
+
+        .source-item {
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            border-left: 3px solid #19c37d;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            margin-bottom: 0.75rem;
+            font-size: 0.9rem;
+        }
+
+        .source-item a {
+            color: #19c37d;
+            word-break: break-all;
+        }
+
+        /* Loading */
+        .loading-dots {
+            display: flex;
+            gap: 6px;
+            padding: 1rem 0;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            background: #19c37d;
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out both;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 1.5rem;
+            background: #212121;
+            border-top: 1px solid #3e3e3e;
+        }
+
+        .input-wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            display: flex;
+            align-items: flex-end;
+            gap: 0.75rem;
+        }
+
+        .input-box {
+            flex: 1;
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            color: #ececec;
+            padding: 1rem 1.25rem;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: none;
+            max-height: 200px;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        .input-box:focus {
+            border-color: #19c37d;
+        }
+
+        .input-box::placeholder {
+            color: #666;
+        }
+
+        .send-btn {
+            width: 48px;
+            height: 48px;
+            background: #19c37d;
+            border: none;
+            border-radius: 12px;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: #15a870;
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            background: #3e3e3e;
+            cursor: not-allowed;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #2f2f2f;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #3e3e3e;
+            border-radius: 5px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4a4a4a;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .welcome-title {
+                font-size: 2rem;
+            }
+            
+            .chat-area {
+                padding: 1rem;
+            }
+            
+            .input-area {
+                padding: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-title">
+            💹 Financial Research AI
+        </div>
+        <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="chat-area" id="chatArea">
+            <div class="chat-container">
+                <!-- Welcome Screen -->
+                <div class="welcome" id="welcomeScreen">
+                    <div class="welcome-icon">🤖</div>
+                    <h1 class="welcome-title">Financial Research AI</h1>
+                    <p class="welcome-subtitle">Your intelligent assistant for market analysis and stock research</p>
+                    
+                    <div class="example-prompts">
+                        <button class="example-prompt" onclick="askQuestion('What is Tesla\'s current stock price?')">
+                            <span>📈</span>
+                            <span>What is Tesla's current stock price?</span>
+                        </button>
+                        <button class="example-prompt" onclick="askQuestion('Analyze Apple\'s recent performance')">
+                            <span>💼</span>
+                            <span>Analyze Apple's recent performance</span>
+                        </button>
+                        <button class="example-prompt" onclick="askQuestion('Compare Microsoft vs Google revenue')">
+                            <span>⚖️</span>
+                            <span>Compare Microsoft vs Google revenue</span>
+                        </button>
+                        <button class="example-prompt" onclick="askQuestion('What are the top AI stocks in 2026?')">
+                            <span>🚀</span>
+                            <span>What are the top AI stocks in 2026?</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Messages -->
+                <div class="messages" id="messages"></div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <div class="input-wrapper">
+                <textarea 
+                    id="messageInput" 
+                    class="input-box" 
+                    placeholder="Ask about stocks, companies, or markets..."
+                    rows="1"
+                ></textarea>
+                <button class="send-btn" id="sendBtn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- File Upload Area -->
+        <div class="file-upload-area" id="fileUploadArea" style="display: none;">
+            <div class="file-upload-container">
+                <div class="upload-header">
+                    <h3>📄 Document Analysis</h3>
+                    <button class="close-upload" onclick="closeUpload()">✕</button>
+                </div>
+                <div class="upload-content">
+                    <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.doc" style="display: none;">
+                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
+                        📎 Upload PDF/DOCX/TXT
+                    </button>
+                    <div id="uploadStatus"></div>
+                    <div id="filesList"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- External Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    
+    <!-- Complete JavaScript -->
+    <script>
+        // =========================
+        // Application State
+        // =========================
+        let sessionId = generateUUID();
+        let isProcessing = false;
+        let theme = localStorage.getItem('theme') || 'dark';
+
+        function generateUUID() {
+            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                const r = Math.random() * 16 | 0;
+                const v = c === 'x' ? r : (r & 0x3 | 0x8);
+                return v.toString(16);
+            });
+        }
+
+        // =========================
+        // Initialize App
+        // =========================
+        console.log('🚀 Financial Research AI loaded');
+        console.log('Session ID:', sessionId);
+
+        // Theme button
+        document.getElementById('themeBtn').addEventListener('click', toggleTheme);
+
+        // Send button
+        document.getElementById('sendBtn').addEventListener('click', sendMessage);
+
+        // Input box - Enter to send
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // Auto-resize textarea
+        document.getElementById('messageInput').addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 200) + 'px';
+        });
+
+        // =========================
+        // Theme Functions
+        // =========================
+        function toggleTheme() {
+            theme = theme === 'dark' ? 'light' : 'dark';
+            if (theme === 'light') {
+                document.body.style.background = '#ffffff';
+                document.body.style.color = '#0d0d0d';
+                document.getElementById('themeBtn').textContent = '☀️';
+            } else {
+                document.body.style.background = '#212121';
+                document.body.style.color = '#ececec';
+                document.getElementById('themeBtn').textContent = '🌙';
+            }
+            localStorage.setItem('theme', theme);
+        }
+
+        // =========================
+        // Ask Question (Example Prompts)
+        // =========================
+        function askQuestion(text) {
+            document.getElementById('messageInput').value = text;
+            sendMessage();
+        }
+
+        // =========================
+        // Send Message to API
+        // =========================
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+            
+            if (!message || isProcessing) {
+                console.log('Empty message or processing');
+                return;
+            }
+            
+            console.log('📤 Sending:', message);
+            
+            // Update state
+            isProcessing = true;
+            input.value = '';
+            input.style.height = 'auto';
+            document.getElementById('sendBtn').disabled = true;
+            
+            // Hide welcome screen
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('messages').classList.add('active');
+            
+            // Add user message
+            addMessage('user', message);
+            
+            // Add loading
+            const loadingId = addLoading();
+            
+            try {
+                const response = await fetch('/api/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        message: message, 
+                        session_id: sessionId 
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`API Error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                console.log('📥 Received:', data);
+                
+                // Remove loading
+                removeLoading(loadingId);
+                
+                // Add assistant response
+                addMessage('assistant', data.response, data.sources, data.report_path);
+                
+            } catch (error) {
+                console.error('❌ Error:', error);
+                removeLoading(loadingId);
+                addMessage('assistant', `❌ **Error:** ${error.message}\n\nPlease try again.`);
+            } finally {
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
+                input.focus();
+            }
+        }
+
+        // =========================
+        // Add Message to Chat
+        // =========================
+        function addMessage(role, content, sources = [], reportPath = null) {
+            const container = document.getElementById('messages');
+            const msgDiv = document.createElement('div');
+            msgDiv.className = `message ${role}`;
+            
+            // Parse markdown
+            let html = content;
+            if (typeof marked !== 'undefined') {
+                try {
+                    html = marked.parse(content);
+                } catch (e) {
+                    html = content.replace(/\n/g, '<br>');
+                }
+            } else {
+                html = content.replace(/\n/g, '<br>');
+            }
+            
+            // Build sources
+            let sourcesHTML = '';
+            if (sources && sources.length > 0) {
+                sourcesHTML = `
+                    <div class="sources">
+                        <div class="sources-title">📚 Sources (${sources.length})</div>
+                        ${sources.map(s => `
+                            <div class="source-item">
+                                <strong>${s.title}</strong><br>
+                                <a href="${s.url}" target="_blank">${s.url}</a>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            // Build actions
+            let actionsHTML = '';
+            if (role === 'assistant') {
+                const escaped = content.replace(/'/g, "\\'").replace(/\n/g, '\\n');
+                actionsHTML = `
+                    <div class="message-actions">
+                        <button class="action-btn" onclick="copyText('${escaped}', this)">📋 Copy</button>
+                        ${reportPath ? `<button class="action-btn" onclick="window.open('/api/reports/${reportPath.split(/[\\\\/]/).pop()}', '_blank')">📊 Report</button>` : ''}
+                    </div>
+                `;
+            }
+            
+            msgDiv.innerHTML = `
+                <div class="message-avatar">${role === 'user' ? '👤' : '🤖'}</div>
+                <div class="message-content">
+                    <div class="message-text">${html}</div>
+                    ${actionsHTML}
+                    ${sourcesHTML}
+                </div>
+            `;
+            
+            container.appendChild(msgDiv);
+            
+            // Scroll to bottom
+            setTimeout(() => {
+                msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
+            }, 100);
+        }
+
+        // =========================
+        // Loading Animation
+        // =========================
+        function addLoading() {
+            const container = document.getElementById('messages');
+            const id = 'loading-' + Date.now();
+            const div = document.createElement('div');
+            div.id = id;
+            div.className = 'message assistant';
+            div.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="loading-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                </div>
+            `;
+            container.appendChild(div);
+            setTimeout(() => div.scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
+            return id;
+        }
+
+        function removeLoading(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        // =========================
+        // Copy Text
+        // =========================
+        function copyText(text, btn) {
+            text = text.replace(/\\'/g, "'").replace(/\\n/g, '\n');
+            navigator.clipboard.writeText(text).then(() => {
+                const orig = btn.textContent;
+                btn.textContent = '✅ Copied!';
+                setTimeout(() => btn.textContent = orig, 2000);
+            }).catch(() => alert('Copy failed'));
+        }
+
+        // =========================
+        // File Upload Functions
+        // =========================
+        // File upload button in header
+        document.querySelector('.header-title').insertAdjacentHTML('afterend', `
+            <button class="theme-btn" onclick="showUpload()" style="margin-right: 10px;" title="Upload Document">
+                📎
+            </button>
+        `);
+
+        function showUpload() {
+            document.getElementById('fileUploadArea').style.display = 'flex';
+            loadFilesList();
+        }
+
+        function closeUpload() {
+            document.getElementById('fileUploadArea').style.display = 'none';
+        }
+
+        // Handle file upload
+        document.addEventListener('DOMContentLoaded', function() {
+            const fileInput = document.getElementById('fileInput');
+            if (fileInput) {
+                fileInput.addEventListener('change', async function(e) {
+                    const file = e.target.files[0];
+                    if (!file) return;
+                    
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    
+                    const status = document.getElementById('uploadStatus');
+                    status.textContent = 'Uploading...';
+                    status.className = '';
+                    status.style.display = 'block';
+                    
+                    try {
+                        const response = await fetch('/api/upload', {
+                            method: 'POST',
+                            body: formData
+                        });
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            status.textContent = `✅ ${data.filename} uploaded successfully!`;
+                            status.className = 'success';
+                            loadFilesList();
+                            
+                            // Ask if user wants to analyze
+                            setTimeout(() => {
+                                const analyze = confirm(`Analyze ${data.filename}?`);
+                                if (analyze) {
+                                    analyzeDocument(data.file_path, `Analyze this document: ${data.filename}`);
+                                }
+                            }, 1000);
+                        } else {
+                            throw new Error('Upload failed');
+                        }
+                    } catch (error) {
+                        status.textContent = `❌ Error: ${error.message}`;
+                        status.className = 'error';
+                    }
+                });
+            }
+        });
+
+        async function loadFilesList() {
+            try {
+                const response = await fetch('/api/files');
+                const data = await response.json();
+                
+                const filesList = document.getElementById('filesList');
+                if (data.files && data.files.length > 0) {
+                    filesList.innerHTML = '<h4>Uploaded Files:</h4>' + 
+                        data.files.map(f => `
+                            <div style="padding: 0.5rem; background: #3e3e3e; margin: 0.5rem 0; border-radius: 6px;">
+                                📄 ${f.name} 
+                                <button onclick="analyzeDocument('${f.path}', 'Summarize this document')" 
+                                        style="float: right; padding: 0.25rem 0.5rem; background: #19c37d; border: none; border-radius: 4px; cursor: pointer;">
+                                    Analyze
+                                </button>
+                            </div>
+                        `).join('');
+                } else {
+                    filesList.innerHTML = '<p style="color: #666;">No files uploaded yet</p>';
+                }
+            } catch (error) {
+                console.error('Error loading files:', error);
+            }
+        }
+
+        async function analyzeDocument(filePath, query) {
+            closeUpload();
+            
+            isProcessing = true;
+            document.getElementById('sendBtn').disabled = true;
+            document.getElementById('welcomeScreen').style.display = 'none';
+            document.getElementById('messages').classList.add('active');
+            
+            addMessage('user', query);
+            const loadingId = addLoading();
+            
+            try {
+                const response = await fetch('/api/analyze-document', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ file_path: filePath, query: query })
+                });
+                
+                const data = await response.json();
+                removeLoading(loadingId);
+                addMessage('assistant', data.analysis, data.sources);
+            } catch (error) {
+                removeLoading(loadingId);
+                addMessage('assistant', `❌ Error analyzing document: ${error.message}`);
+            } finally {
+                isProcessing = false;
+                document.getElementById('sendBtn').disabled = false;
+            }
+        }
+
+        console.log('✅ All systems ready!');
+    </script>
+</body>
+</html>
