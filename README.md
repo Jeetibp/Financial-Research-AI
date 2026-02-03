@@ -82,5 +82,6 @@ git clone https://github.com/Jeetibp/financial-research-ai.git
 
 cd financial-research-ai
 
+\\uvicorn src.api:app --reload --host 127.0.0.1 --port 8000
 
 
