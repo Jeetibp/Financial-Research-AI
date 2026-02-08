@@ -21,17 +21,21 @@ class SearchClient:
         }
     
     async def search(self, query: str, max_results: int = 10) -> List[Dict[str, Any]]:
-        """
-        Search using DuckDuckGo
-        
-        Args:
-            query: Search query
-            max_results: Maximum number of results to return
-            
-        Returns:
-            List of search results with title, url, snippet
-        """
+        """Search using DuckDuckGo with validation and error handling"""
         try:
+            # Input validation
+            if not query or not isinstance(query, str):
+                logger.warning("Invalid search query provided")
+                return []
+            
+            query = query.strip()
+            if len(query) < 2:
+                logger.warning("Search query too short")
+                return []
+            
+            # Limit max results to prevent memory issues
+            max_results = min(max_results, 20)
+            
             logger.info(f"Searching for: {query}")
             
             # Prepare search
@@ -48,12 +52,25 @@ class SearchClient:
                 )
                 response.raise_for_status()
                 
+                # Limit response size
+                html = response.text
+                max_html_size = 5_000_000  # 5MB limit
+                if len(html) > max_html_size:
+                    logger.warning(f"Search response too large, truncating")
+                    html = html[:max_html_size]
+                
                 # Parse results
-                results = self._parse_results(response.text, max_results)
+                results = self._parse_results(html, max_results)
                 
                 logger.info(f"Found {len(results)} results for: {query}")
                 return results
                 
+        except httpx.TimeoutException:
+            logger.error(f"Search timeout for query '{query}'")
+            return []
+        except httpx.HTTPError as e:
+            logger.error(f"HTTP error during search for '{query}': {e}")
+            return []
         except Exception as e:
             logger.error(f"Search error for query '{query}'", error=e)
             return []

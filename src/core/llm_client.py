@@ -28,30 +28,49 @@ class LLMClient:
         max_tokens: Optional[int] = None,
         json_mode: bool = False
     ) -> str:
-        """Generate chat completion"""
-        try:
-            logger.debug(f"Generating completion with {len(messages)} messages")
-            
-            kwargs = {
-                "model": self.model,
-                "messages": messages,
-                "temperature": temperature or self.temperature,
-                "max_tokens": max_tokens or self.max_tokens
-            }
-            
-            if json_mode:
-                kwargs["response_format"] = {"type": "json_object"}
-            
-            response = await self.client.chat.completions.create(**kwargs)
-            
-            content = response.choices[0].message.content
-            logger.debug(f"Completion generated: {len(content)} characters")
-            
-            return content
-            
-        except Exception as e:
-            logger.error("Error generating completion", error=e)
-            raise
+        """Generate chat completion with retry logic"""
+        max_retries = 3
+        retry_count = 0
+        
+        while retry_count < max_retries:
+            try:
+                logger.debug(f"Generating completion with {len(messages)} messages (attempt {retry_count + 1})")
+                
+                # Validate messages before sending
+                if not messages or not isinstance(messages, list):
+                    raise ValueError("Messages must be a non-empty list")
+                
+                kwargs = {
+                    "model": self.model,
+                    "messages": messages,
+                    "temperature": temperature or self.temperature,
+                    "max_tokens": max_tokens or self.max_tokens
+                }
+                
+                if json_mode:
+                    kwargs["response_format"] = {"type": "json_object"}
+                
+                response = await self.client.chat.completions.create(**kwargs)
+                
+                if not response or not response.choices:
+                    raise ValueError("Empty response from LLM")
+                
+                content = response.choices[0].message.content
+                logger.debug(f"Completion generated: {len(content)} characters")
+                
+                return content
+                
+            except Exception as e:
+                retry_count += 1
+                logger.error(f"Error generating completion (attempt {retry_count}/{max_retries})", error=e)
+                
+                if retry_count >= max_retries:
+                    logger.error("Max retries reached for LLM generation")
+                    raise
+                
+                # Wait before retry (exponential backoff)
+                import asyncio
+                await asyncio.sleep(2 ** retry_count)
     
     async def generate_with_system_prompt(
         self,
@@ -144,5 +163,5 @@ Analyze the provided context and answer questions accurately with proper citatio
             return response.choices[0].message.content.strip()
             
         except Exception as e:
-            self.logger.error(f"Error generating response: {e}")
+            logger.error(f"Error generating response: {e}")
             raise

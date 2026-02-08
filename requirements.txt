@@ -11,3 +11,10 @@ pydantic==2.5.3
 pydantic-settings==2.1.0
 jupyter==1.0.0
 ipykernel==6.28.0
+
+# Enhanced PDF Processing (Multimodal)
+PyMuPDF==1.23.8
+pdfplumber==0.10.3
+camelot-py==0.11.0
+opencv-python==4.9.0.80
+Pillow==10.2.0

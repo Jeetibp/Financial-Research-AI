@@ -194,11 +194,11 @@ body {
     flex-shrink: 0;
 }
 
-.message.user .message-avatar {
+.message-user .message-avatar {
     background: linear-gradient(135deg, #667eea, #764ba2);
 }
 
-.message.assistant .message-avatar {
+.message-assistant .message-avatar {
     background: linear-gradient(135deg, var(--accent), #15a870);
 }
 
@@ -254,6 +254,79 @@ body {
 .action-btn:hover {
     background: var(--border);
     color: var(--text-primary);
+}
+
+/* Research Plan Styles */
+.research-plan {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.plan-steps {
+    background: var(--bg);
+    padding: 1rem 1rem 1rem 2rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.plan-steps li {
+    margin: 0.75rem 0;
+    line-height: 1.6;
+}
+
+.plan-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.approve-btn, .reject-btn, .modify-btn {
+    flex: 1;
+    min-width: 150px;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.approve-btn {
+    background: #19c37d;
+    color: white;
+}
+
+.approve-btn:hover {
+    background: #15a870;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(25, 195, 125, 0.3);
+}
+
+.reject-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.reject-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.modify-btn {
+    background: #ffc107;
+    color: #000;
+}
+
+.modify-btn:hover {
+    background: #e0a800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 193, 7, 0.3);
 }
 
 .message-sources {
@@ -580,6 +653,131 @@ body {
     overflow-y: auto;
 }
 
+/* Routing / Help styles */
+.routing-info {
+    background: linear-gradient(135deg, rgba(25, 195, 125, 0.1), rgba(102, 126, 234, 0.1));
+    border-left: 3px solid var(--accent);
+    padding: 1rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+    font-size: 0.95rem;
+}
+
+.help-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.help-card h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.help-card ul {
+    margin: 1rem 0;
+}
+
+.help-card li {
+    padding: 0.5rem 0;
+}
+
+/* Execution Progress Styles */
+.execution-progress {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 24px;
+    background: var(--bg);
+    border-radius: 12px;
+    overflow: hidden;
+    margin: 1rem 0;
+}
+
+.progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #19c37d, #15a870);
+    transition: width 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: 600;
+}
+
+.progress-text {
+    text-align: center;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.step-log {
+    max-height: 300px;
+    overflow-y: auto;
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 1rem;
+}
+
+.step-entry {
+    padding: 0.5rem;
+    margin: 0.5rem 0;
+    border-left: 3px solid var(--accent);
+    padding-left: 1rem;
+    animation: slideIn 0.3s ease;
+    font-size: 0.9rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.research-stats {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.research-stats h4 {
+    color: var(--accent);
+    margin-bottom: 0.75rem;
+}
+
+.research-stats ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.research-stats li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+    font-size: 0.95rem;
+}
+
+.research-stats li:last-child {
+    border-bottom: none;
+}
+
 /* Responsive */
 @media (max-width: 768px) {
     .app-title {
@@ -597,4 +795,99 @@ body {
     .input-footer {
         padding: 1rem;
     }
+}
+
+/* Additional Research Plan styling (requested) */
+.research-plan {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+}
+
+.research-plan h3 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+}
+
+.research-plan h4 {
+    color: var(--text-primary);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+}
+
+.plan-steps {
+    background: var(--bg);
+    padding: 1rem 1rem 1rem 2rem;
+    border-radius: 8px;
+    margin: 1rem 0;
+}
+
+.plan-steps li {
+    margin: 0.75rem 0;
+    line-height: 1.6;
+}
+
+.plan-steps small {
+    color: var(--text-secondary);
+}
+
+.plan-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.approve-btn, .reject-btn {
+    flex: 1;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.approve-btn {
+    background: #19c37d;
+    color: white;
+}
+
+.approve-btn:hover {
+    background: #15a870;
+    transform: translateY(-2px);
+}
+
+.reject-btn {
+    background: #dc3545;
+    color: white;
+}
+
+.reject-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+}
+
+.research-stats {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1rem;
+    margin: 1rem 0;
+}
+
+.research-stats ul {
+    list-style: none;
+    padding: 0;
+}
+
+.research-stats li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--border);
+}
+
+.research-stats li:last-child {
+    border-bottom: none;
 }

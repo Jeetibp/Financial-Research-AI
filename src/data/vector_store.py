@@ -39,27 +39,59 @@ class VectorStore:
         self._load_store()
     
     def add_chunks(self, chunks: List[Chunk]):
-        """Add chunks to vector store"""
+        """Add chunks to vector store with batching for performance"""
         if not chunks:
             logger.warning("No chunks to add")
             return
         
-        logger.info(f"Adding {len(chunks)} chunks to vector store")
-        
-        # Extract texts
-        texts = [chunk.text for chunk in chunks]
-        
-        # Generate embeddings
-        logger.info("Generating embeddings...")
-        new_embeddings = self.model.encode(texts, show_progress_bar=False)
-        
-        # Add to store
-        self.chunks.extend(chunks)
-        
-        if self.embeddings is None:
-            self.embeddings = new_embeddings
-        else:
-            self.embeddings = np.vstack([self.embeddings, new_embeddings])
+        try:
+            # Limit total chunks for performance (max 800 chunks in store - reduced for memory)
+            max_store_size = 800
+            if len(self.chunks) + len(chunks) > max_store_size:
+                excess = (len(self.chunks) + len(chunks)) - max_store_size
+                logger.warning(f"Vector store limit reached. Removing {excess} oldest chunks")
+                # Remove oldest chunks
+                self.chunks = self.chunks[excess:]
+                if self.embeddings is not None:
+                    self.embeddings = self.embeddings[excess:]
+            
+            logger.info(f"Adding {len(chunks)} chunks to vector store")
+            
+            # Extract texts
+            texts = [chunk.text for chunk in chunks]
+            
+            # Generate embeddings in batches for better performance
+            logger.info("Generating embeddings...")
+            batch_size = 32  # Process in batches
+            new_embeddings_list = []
+            
+            for i in range(0, len(texts), batch_size):
+                batch_texts = texts[i:i + batch_size]
+                batch_embeddings = self.model.encode(batch_texts, show_progress_bar=False, batch_size=batch_size)
+                new_embeddings_list.append(batch_embeddings)
+            
+            new_embeddings = np.vstack(new_embeddings_list) if len(new_embeddings_list) > 1 else new_embeddings_list[0]
+            
+            # Add to store
+            self.chunks.extend(chunks)
+            
+            if self.embeddings is None:
+                self.embeddings = new_embeddings
+            else:
+                self.embeddings = np.vstack([self.embeddings, new_embeddings])
+                self.embeddings = np.vstack([self.embeddings, new_embeddings])
+                
+        except MemoryError as e:
+            logger.error(f"MemoryError adding chunks: {e}. Clearing oldest chunks.")
+            # Emergency cleanup - keep only last 400 chunks
+            if len(self.chunks) > 400:
+                self.chunks = self.chunks[-400:]
+                if self.embeddings is not None:
+                    self.embeddings = self.embeddings[-400:]
+            raise
+        except Exception as e:
+            logger.error(f"Error adding chunks to vector store: {e}")
+            raise
         
         logger.info(f"Vector store now contains {len(self.chunks)} chunks")
     
@@ -97,7 +129,13 @@ class VectorStore:
         # Build results
         results = []
         for idx in top_indices:
-            if similarities[idx] > 0.1:  # Minimum similarity threshold
+            # Bounds check to prevent index errors
+            if idx >= len(self.chunks):
+                logger.warning(f"Index {idx} out of bounds for chunks list (size: {len(self.chunks)})")
+                continue
+            
+            # Lowered threshold from 0.1 to 0.05 for better recall
+            if similarities[idx] > 0.05:
                 results.append({
                     'chunk': self.chunks[idx],
                     'score': float(similarities[idx]),
@@ -107,6 +145,78 @@ class VectorStore:
         
         logger.debug(f"Found {len(results)} relevant chunks")
         return results
+    
+    def cleanup_old_chunks(self, keep_last_n: int = 500):
+        """Cleanup old chunks to free memory"""
+        try:
+            if len(self.chunks) > keep_last_n:
+                removed = len(self.chunks) - keep_last_n
+                self.chunks = self.chunks[-keep_last_n:]
+                if self.embeddings is not None:
+                    self.embeddings = self.embeddings[-keep_last_n:]
+                logger.info(f"Cleaned up {removed} old chunks, {keep_last_n} remaining")
+        except Exception as e:
+            logger.error(f"Error during cleanup: {e}")
+    
+    def get_chunks_by_doc_id(self, doc_id: str) -> List[Dict[str, Any]]:
+        """
+        Get ALL chunks for a specific document
+        
+        Args:
+            doc_id: Document ID to retrieve chunks for
+            
+        Returns:
+            List of all chunks from the document with metadata
+        """
+        if not self.chunks:
+            logger.warning("Vector store is empty")
+            return []
+        
+        # Filter chunks by doc_id in metadata
+        doc_chunks = []
+        for idx, chunk in enumerate(self.chunks):
+            if chunk.metadata.get('doc_id') == doc_id:
+                doc_chunks.append({
+                    'chunk': chunk,
+                    'score': 1.0,  # All chunks are equally relevant for full doc
+                    'text': chunk.text,
+                    'metadata': chunk.metadata,
+                    'index': idx
+                })
+        
+        logger.info(f"Retrieved {len(doc_chunks)} chunks for doc_id: {doc_id}")
+        return doc_chunks
+    
+    def remove_document_by_id(self, doc_id: str) -> int:
+        """Remove specific document without clearing entire store"""
+        if not self.chunks:
+            logger.warning("Vector store is empty, nothing to remove")
+            return 0
+        
+        # Find indices of chunks to remove
+        indices_to_remove = [
+            i for i, chunk in enumerate(self.chunks)
+            if chunk.metadata.get('doc_id') == doc_id
+        ]
+        
+        if not indices_to_remove:
+            logger.warning(f"No chunks found for doc_id: {doc_id}")
+            return 0
+        
+        # Remove chunks and embeddings
+        self.chunks = [
+            chunk for i, chunk in enumerate(self.chunks)
+            if i not in indices_to_remove
+        ]
+        
+        if self.embeddings is not None:
+            mask = np.ones(len(self.embeddings), dtype=bool)
+            mask[indices_to_remove] = False
+            self.embeddings = self.embeddings[mask] if self.chunks else None
+        
+        removed_count = len(indices_to_remove)
+        logger.info(f"Removed {removed_count} chunks for doc_id: {doc_id}, {len(self.chunks)} chunks remaining")
+        return removed_count
     
     def save_store(self):
         """Save vector store to disk"""

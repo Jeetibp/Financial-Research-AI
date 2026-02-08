@@ -52,6 +52,9 @@
             font-size: 20px;
             cursor: pointer;
             transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .theme-btn:hover {
@@ -154,6 +157,7 @@
             display: flex;
             gap: 1rem;
             animation: slideUp 0.3s ease;
+            margin-bottom: 1rem;
         }
 
         @keyframes slideUp {
@@ -178,16 +182,17 @@
             flex-shrink: 0;
         }
 
-        .message.user .message-avatar {
+        .message.user-message .message-avatar {
             background: linear-gradient(135deg, #667eea, #764ba2);
         }
 
-        .message.assistant .message-avatar {
+        .message.assistant-message .message-avatar {
             background: linear-gradient(135deg, #19c37d, #15a870);
         }
 
         .message-content {
             flex: 1;
+            position: relative;
         }
 
         .message-text {
@@ -229,54 +234,68 @@
             text-decoration: underline;
         }
 
-        .message-actions {
-            display: flex;
-            gap: 0.5rem;
-            margin-top: 1rem;
-        }
-
-        .action-btn {
+        .copy-btn {
             background: #2f2f2f;
             border: 1px solid #3e3e3e;
             color: #b4b4b4;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.9rem;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
             cursor: pointer;
+            margin-top: 8px;
             transition: all 0.2s;
         }
 
-        .action-btn:hover {
+        .copy-btn:hover {
             background: #3e3e3e;
             color: #ececec;
         }
 
         .sources {
             margin-top: 1.5rem;
-            padding-top: 1.5rem;
+            padding-top: 1rem;
             border-top: 1px solid #3e3e3e;
-        }
-
-        .sources-title {
-            font-weight: 600;
-            color: #19c37d;
-            margin-bottom: 1rem;
-            font-size: 0.95rem;
-        }
-
-        .source-item {
-            background: #2f2f2f;
-            border: 1px solid #3e3e3e;
-            border-left: 3px solid #19c37d;
-            padding: 0.75rem 1rem;
-            border-radius: 6px;
-            margin-bottom: 0.75rem;
             font-size: 0.9rem;
         }
 
-        .source-item a {
-            color: #19c37d;
-            word-break: break-all;
+        /* Research Plan Styles */
+        .research-plan {
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin: 1rem 0;
+        }
+
+        .research-plan h3 { color: #19c37d; margin-top: 0; }
+        .plan-steps { margin-left: 1.2rem; }
+        .plan-actions { display: flex; gap: 1rem; margin-top: 1.5rem; }
+        
+        .approve-btn {
+            background: #19c37d;
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        .reject-btn {
+            background: #3e3e3e;
+            color: #ececec;
+            border: 1px solid #4a4a4a;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .research-stats {
+            background: #1a1a1a;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1rem;
+            font-size: 0.9rem;
         }
 
         /* Loading */
@@ -300,6 +319,67 @@
         @keyframes bounce {
             0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
             40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Compact Mode Toggle Button */
+        .mode-toggle-btn {
+            width: 48px;
+            height: 48px;
+            background: #2f2f2f;
+            border: 1px solid #3e3e3e;
+            border-radius: 12px;
+            color: #ececec;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .mode-toggle-btn:hover {
+            background: #3e3e3e;
+            transform: scale(1.05);
+        }
+
+        .mode-toggle-btn.active {
+            background: #19c37d;
+            border-color: #19c37d;
+        }
+
+        .mode-toggle-btn .tooltip {
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #1a1a1a;
+            color: #ececec;
+            padding: 0.5rem 0.75rem;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            margin-bottom: 8px;
+            border: 1px solid #3e3e3e;
+            z-index: 1000;
+        }
+
+        .mode-toggle-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .mode-toggle-btn .tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 5px solid transparent;
+            border-top-color: #1a1a1a;
         }
 
         /* Input Area */
@@ -337,10 +417,6 @@
             border-color: #19c37d;
         }
 
-        .input-box::placeholder {
-            color: #666;
-        }
-
         .send-btn {
             width: 48px;
             height: 48px;
@@ -356,47 +432,259 @@
             flex-shrink: 0;
         }
 
-        .send-btn:hover:not(:disabled) {
-            background: #15a870;
-            transform: scale(1.05);
-        }
-
         .send-btn:disabled {
             background: #3e3e3e;
             cursor: not-allowed;
         }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar {
-            width: 10px;
+        /* File Upload Area */
+        .file-upload-area {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            animation: fadeIn 0.2s ease;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #2f2f2f;
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
 
-        ::-webkit-scrollbar-thumb {
+        .file-upload-container {
+            background: linear-gradient(145deg, #2f2f2f, #2a2a2a);
+            width: 500px;
+            max-width: 90%;
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #3e3e3e;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(30px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .upload-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #3e3e3e;
+        }
+
+        .upload-header h3 {
+            font-size: 1.3rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .close-upload {
             background: #3e3e3e;
-            border-radius: 5px;
+            border: none;
+            color: #ececec;
+            font-size: 1.3rem;
+            cursor: pointer;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
         }
 
-        ::-webkit-scrollbar-thumb:hover {
-            background: #4a4a4a;
+        .close-upload:hover {
+            background: #ff4444;
+            transform: rotate(90deg);
+        }
+
+        .upload-drop-zone {
+            width: 100%;
+            padding: 3rem 1rem;
+            background: #2a2a2a;
+            border: 2px dashed #4a4a4a;
+            border-radius: 12px;
+            color: #ececec;
+            cursor: pointer;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+        }
+
+        .upload-drop-zone:hover {
+            background: #353535;
+            border-color: #19c37d;
+        }
+
+        .upload-drop-zone.drag-over {
+            background: #353535;
+            border-color: #19c37d;
+            transform: scale(1.02);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.7;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .upload-hint {
+            font-size: 0.9rem;
+            opacity: 0.6;
+        }
+
+        #uploadStatus {
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        #uploadStatus.success {
+            background: rgba(25, 195, 125, 0.1);
+            border: 1px solid #19c37d;
+            color: #19c37d;
+        }
+
+        #uploadStatus.error {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+        }
+
+        #uploadStatus.uploading {
+            background: rgba(100, 150, 255, 0.1);
+            border: 1px solid #6496ff;
+            color: #6496ff;
+        }
+
+        .file-item {
+            padding: 0.75rem;
+            background: #353535;
+            margin: 0.5rem 0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: all 0.2s;
+        }
+
+        .file-item:hover {
+            background: #3e3e3e;
+        }
+
+        .file-info {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .file-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .file-btn {
+            padding: 0.4rem 0.75rem;
+            background: #19c37d;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .file-btn:hover {
+            background: #17b070;
+            transform: translateY(-1px);
+        }
+
+        .file-btn.delete {
+            background: #ff4444;
+        }
+
+        .file-btn.delete:hover {
+            background: #e63939;
+        }
+
+        /* Attachment Indicator */
+        #attachmentIndicator {
+            padding: 0.75rem 1rem;
+            background: linear-gradient(135deg, #19c37d15, #19c37d25);
+            border: 1px solid #19c37d;
+            border-radius: 10px;
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideInUp 0.3s ease;
+        }
+
+        @keyframes slideInUp {
+            from { transform: translateY(10px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        #attachmentIndicator .file-name {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #19c37d;
+        }
+
+        #attachmentIndicator .file-badge {
+            background: #19c37d;
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        #attachmentIndicator button {
+            background: rgba(255, 68, 68, 0.1);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            cursor: pointer;
+            font-size: 1rem;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        #attachmentIndicator button:hover {
+            background: #ff4444;
+            color: white;
+            transform: scale(1.1);
         }
 
         /* Responsive */
         @media (max-width: 768px) {
-            .welcome-title {
-                font-size: 2rem;
-            }
-            
-            .chat-area {
-                padding: 1rem;
-            }
-            
-            .input-area {
-                padding: 1rem;
-            }
+            .welcome-title { font-size: 2rem; }
+            .chat-area { padding: 1rem; }
+            .input-area { padding: 1rem; }
         }
     </style>
 </head>
@@ -406,6 +694,12 @@
         <div class="header-title">
             💹 Financial Research AI
         </div>
+        <a href="user-guide.html" target="_blank" style="margin-left: auto; padding: 0.5rem 1rem; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s; text-decoration: none; display: inline-block;" onmouseover="this.style.background='#5568d3'" onmouseout="this.style.background='#667eea'" title="Open comprehensive user guide">
+            📖 User Guide
+        </a>
+        <button onclick="clearContext()" style="margin-left: 10px; padding: 0.5rem 1rem; background: #dc3545; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.9rem; transition: all 0.2s;" onmouseover="this.style.background='#c82333'" onmouseout="this.style.background='#dc3545'" title="Start a new conversation">
+            🔄 New Conversation
+        </button>
         <button class="theme-btn" id="themeBtn" title="Toggle theme">🌙</button>
     </header>
 
@@ -453,6 +747,10 @@
                     placeholder="Ask about stocks, companies, or markets..."
                     rows="1"
                 ></textarea>
+                <button class="mode-toggle-btn" id="deepModeToggle">
+                    <span class="tooltip" id="modeTooltip">⚡ Quick Mode</span>
+                    <span id="modeIcon">⚡</span>
+                </button>
                 <button class="send-btn" id="sendBtn">
                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -471,9 +769,11 @@
                 </div>
                 <div class="upload-content">
                     <input type="file" id="fileInput" accept=".pdf,.docx,.txt,.doc" style="display: none;">
-                    <button class="upload-btn" onclick="document.getElementById('fileInput').click()">
-                        📎 Upload PDF/DOCX/TXT
-                    </button>
+                    <div class="upload-drop-zone" id="dropZone" onclick="document.getElementById('fileInput').click()">
+                        <div class="upload-icon">📁</div>
+                        <div class="upload-text">Drop your file here or click to browse</div>
+                        <div class="upload-hint">Supports PDF, DOCX, TXT files • Max 50MB</div>
+                    </div>
                     <div id="uploadStatus"></div>
                     <div id="filesList"></div>
                 </div>
@@ -489,9 +789,15 @@
         // =========================
         // Application State
         // =========================
-        let sessionId = generateUUID();
+        let sessionId = localStorage.getItem('session_id') || generateSessionId();
+        localStorage.setItem('session_id', sessionId);
         let isProcessing = false;
         let theme = localStorage.getItem('theme') || 'dark';
+        let deepModeEnabled = localStorage.getItem('deepMode') === 'true' || false;
+
+        function generateSessionId() {
+            return 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        }
 
         function generateUUID() {
             return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
@@ -505,15 +811,9 @@
         // Initialize App
         // =========================
         console.log('🚀 Financial Research AI loaded');
-        console.log('Session ID:', sessionId);
 
-        // Theme button
         document.getElementById('themeBtn').addEventListener('click', toggleTheme);
-
-        // Send button
         document.getElementById('sendBtn').addEventListener('click', sendMessage);
-
-        // Input box - Enter to send
         document.getElementById('messageInput').addEventListener('keydown', function(e) {
             if (e.key === 'Enter' && !e.shiftKey) {
                 e.preventDefault();
@@ -521,11 +821,35 @@
             }
         });
 
-        // Auto-resize textarea
         document.getElementById('messageInput').addEventListener('input', function() {
             this.style.height = 'auto';
             this.style.height = Math.min(this.scrollHeight, 200) + 'px';
         });
+
+        // Deep Mode Toggle Button
+        const deepModeToggle = document.getElementById('deepModeToggle');
+        const modeIcon = document.getElementById('modeIcon');
+        const modeTooltip = document.getElementById('modeTooltip');
+        
+        updateModeButton(deepModeEnabled);
+        
+        deepModeToggle.addEventListener('click', function() {
+            deepModeEnabled = !deepModeEnabled;
+            localStorage.setItem('deepMode', deepModeEnabled);
+            updateModeButton(deepModeEnabled);
+        });
+
+        // =========================
+        // Session Management
+        // =========================
+        function clearContext() {
+            sessionId = generateSessionId();
+            localStorage.setItem('session_id', sessionId);
+            document.getElementById('messages').innerHTML = '';
+            document.getElementById('messages').classList.remove('active');
+            document.getElementById('welcomeScreen').style.display = 'block';
+            console.log('🔄 Context cleared, new session:', sessionId);
+        }
 
         // =========================
         // Theme Functions
@@ -544,12 +868,25 @@
             localStorage.setItem('theme', theme);
         }
 
-        // =========================
-        // Ask Question (Example Prompts)
-        // =========================
         function askQuestion(text) {
             document.getElementById('messageInput').value = text;
             sendMessage();
+        }
+
+        function updateModeButton(isDeepMode) {
+            const deepModeToggle = document.getElementById('deepModeToggle');
+            const modeIcon = document.getElementById('modeIcon');
+            const modeTooltip = document.getElementById('modeTooltip');
+            
+            if (isDeepMode) {
+                deepModeToggle.classList.add('active');
+                modeIcon.textContent = '🔬';
+                modeTooltip.textContent = '🔬 Deep Analysis Mode';
+            } else {
+                deepModeToggle.classList.remove('active');
+                modeIcon.textContent = '⚡';
+                modeTooltip.textContent = '⚡ Quick Mode';
+            }
         }
 
         // =========================
@@ -559,149 +896,243 @@
             const input = document.getElementById('messageInput');
             const message = input.value.trim();
             
-            if (!message || isProcessing) {
-                console.log('Empty message or processing');
-                return;
-            }
+            if (!message || isProcessing) return;
             
-            console.log('📤 Sending:', message);
-            
-            // Update state
             isProcessing = true;
             input.value = '';
-            input.style.height = 'auto';
             document.getElementById('sendBtn').disabled = true;
-            
-            // Hide welcome screen
             document.getElementById('welcomeScreen').style.display = 'none';
             document.getElementById('messages').classList.add('active');
             
-            // Add user message
             addMessage('user', message);
-            
-            // Add loading
             const loadingId = addLoading();
             
             try {
+                // Include attached file if present
+                const requestBody = { 
+                    message: message,
+                    session_id: sessionId,
+                    deepMode: deepModeEnabled
+                };
+                
+                // Add file path if file was uploaded
+                if (window.lastUploadedFile && window.lastUploadedFile.path) {
+                    requestBody.file_path = window.lastUploadedFile.path;
+                    console.log('Sending with attached file:', window.lastUploadedFile.filename);
+                }
+                
+                // Log deep mode status
+                if (deepModeEnabled) {
+                    console.log('🔬 Deep Analysis Mode enabled');
+                }
+                
                 const response = await fetch('/api/chat', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ 
-                        message: message, 
-                        session_id: sessionId 
-                    })
+                    body: JSON.stringify(requestBody)
                 });
                 
-                if (!response.ok) {
-                    throw new Error(`API Error: ${response.status}`);
+                const data = await response.json();
+                removeLoading(loadingId);
+                
+                // Update session ID from response
+                if (data.session_id) {
+                    sessionId = data.session_id;
+                    localStorage.setItem('session_id', sessionId);
                 }
                 
-                const data = await response.json();
-                console.log('📥 Received:', data);
+                console.log('Response:', data);
                 
-                // Remove loading
-                removeLoading(loadingId);
-                
-                // Add assistant response
-                addMessage('assistant', data.response, data.sources, data.report_path);
+                if (!data.success) {
+                    addMessage('assistant', data.response);
+                } else if (data.requires_approval === false) {
+                    // SIMPLE QUERY - Direct answer
+                    // Don't show routing_info separately - it's already logged internally
+                    addMessage('assistant', data.response, data.sources || []);
+                } else if (data.requires_approval && data.plan) {
+                    // COMPLEX QUERY - Show plan
+                    if (data.routing) {
+                        const routingMsg = `🚦 **Routed to:** ${data.routing.sector || 'General'} Sector (${data.complexity} complexity)`;
+                        addMessage('assistant', routingMsg);
+                    }
+                    showResearchPlan(data.plan);
+                } else {
+                    addMessage('assistant', data.response || data.message || 'No response');
+                }
                 
             } catch (error) {
-                console.error('❌ Error:', error);
                 removeLoading(loadingId);
-                addMessage('assistant', `❌ **Error:** ${error.message}\n\nPlease try again.`);
+                addMessage('assistant', `❌ Error: ${error.message}`);
             } finally {
                 isProcessing = false;
                 document.getElementById('sendBtn').disabled = false;
-                input.focus();
             }
         }
 
         // =========================
-        // Add Message to Chat
+        // Research Plan UI
         // =========================
-        function addMessage(role, content, sources = [], reportPath = null) {
-            const container = document.getElementById('messages');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${role}`;
-            
-            // Parse markdown
-            let html = content;
-            if (typeof marked !== 'undefined') {
-                try {
-                    html = marked.parse(content);
-                } catch (e) {
-                    html = content.replace(/\n/g, '<br>');
-                }
-            } else {
-                html = content.replace(/\n/g, '<br>');
-            }
-            
-            // Build sources
-            let sourcesHTML = '';
-            if (sources && sources.length > 0) {
-                sourcesHTML = `
-                    <div class="sources">
-                        <div class="sources-title">📚 Sources (${sources.length})</div>
-                        ${sources.map(s => `
-                            <div class="source-item">
-                                <strong>${s.title}</strong><br>
-                                <a href="${s.url}" target="_blank">${s.url}</a>
-                            </div>
+        function showResearchPlan(plan) {
+            const planHTML = `
+                <div class="research-plan">
+                    <h3>📋 Research Plan Generated</h3>
+                    <p><strong>Query:</strong> ${plan.query}</p>
+                    <p><strong>Sector:</strong> ${plan.sector}</p>
+                    <p><strong>Analysis Type:</strong> ${plan.analysis_type}</p>
+                    <p><strong>Depth:</strong> ${plan.estimated_depth} (${plan.total_steps} steps)</p>
+                    
+                    <h4>Research Steps:</h4>
+                    <ol class="plan-steps">
+                        ${plan.steps.map(step => `
+                            <li>
+                                <strong>${step.action}</strong> - ${step.description}
+                                <br><small>Tool: ${step.tool} | Expected: ${step.expected_output}</small>
+                            </li>
                         `).join('')}
+                    </ol>
+                    
+                    <div class="plan-actions">
+                        <button class="approve-btn" onclick="approvePlan('${plan.plan_id}')">
+                            ✅ Approve & Execute
+                        </button>
+                        <button class="reject-btn" onclick="rejectPlan('${plan.plan_id}')">
+                            ❌ Reject
+                        </button>
                     </div>
-                `;
-            }
-            
-            // Build actions
-            let actionsHTML = '';
-            if (role === 'assistant') {
-                const escaped = content.replace(/'/g, "\\'").replace(/\n/g, '\\n');
-                actionsHTML = `
-                    <div class="message-actions">
-                        <button class="action-btn" onclick="copyText('${escaped}', this)">📋 Copy</button>
-                        ${reportPath ? `<button class="action-btn" onclick="window.open('/api/reports/${reportPath.split(/[\\\\/]/).pop()}', '_blank')">📊 Report</button>` : ''}
-                    </div>
-                `;
-            }
-            
-            msgDiv.innerHTML = `
-                <div class="message-avatar">${role === 'user' ? '👤' : '🤖'}</div>
-                <div class="message-content">
-                    <div class="message-text">${html}</div>
-                    ${actionsHTML}
-                    ${sourcesHTML}
                 </div>
             `;
+            addMessage('assistant', planHTML);
+        }
+
+        async function approvePlan(planId) {
+            console.log('Approving plan:', planId);
+            isProcessing = true;
+            const loadingId = addLoading();
             
-            container.appendChild(msgDiv);
-            
-            // Scroll to bottom
-            setTimeout(() => {
-                msgDiv.scrollIntoView({ behavior: 'smooth', block: 'end' });
-            }, 100);
+            try {
+                addMessage('assistant', '✅ Plan approved! Starting execution...');
+                
+                const response = await fetch(`/api/plan/${planId}/execute`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                });
+                
+                const data = await response.json();
+                console.log('Execution result:', data);
+                
+                removeLoading(loadingId);
+                
+                if (data.success && data.results && data.results.final_report) {
+                    if (data.results.final_report.includes("I'm your Financial Research AI")) {
+                        addMessage('assistant', '❌ Research execution failed. Please try again.');
+                    } else {
+                        // Main answer
+                        let messageText = data.results.final_report;
+                        
+                        // ADD SOURCES IF AVAILABLE
+                        if (data.results.sources && data.results.sources.length > 0) {
+                            messageText += '\n\n**Sources:**\n';
+                            data.results.sources.forEach((source, index) => {
+                                if (typeof source === 'string') {
+                                    messageText += `${index + 1}. ${source}\n`;
+                                } else if (source.url) {
+                                    const title = source.title || source.url;
+                                    messageText += `${index + 1}. [${title}](${source.url})\n`;
+                                }
+                            });
+                        }
+                        
+                        addMessage('assistant', messageText);
+                        
+                        // Stats
+                        const statsHTML = `
+**📊 Research Statistics:**
+- **Total Steps:** ${data.results.total_steps_executed || 0}
+- **Sources Used:** ${data.results.sources ? data.results.sources.length : 0}
+- **Execution Time:** ${(data.results.execution_time || 0).toFixed(2)}s
+`;
+                        addMessage('assistant', statsHTML);
+                    }
+                } else {
+                    addMessage('assistant', '❌ Execution failed: ' + (data.error || 'Unknown error'));
+                }
+                
+            } catch (error) {
+                console.error('Execution error:', error);
+                removeLoading(loadingId);
+                addMessage('assistant', `❌ Error: ${error.message}`);
+            } finally {
+                isProcessing = false;
+            }
+        }
+
+        function rejectPlan(planId) {
+            addMessage('assistant', '❌ Plan rejected. Please try a different query.');
+            isProcessing = false;
         }
 
         // =========================
-        // Loading Animation
+        // Helper Functions
         // =========================
+        function addMessage(role, content, sources = []) {
+            const messagesDiv = document.getElementById('messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}-message`;
+            
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = role === 'user' ? '👤' : '🤖';
+            
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            
+            let safeContent = content || '';
+            if (typeof safeContent !== 'string') safeContent = String(safeContent);
+            
+            if (safeContent.includes('<') && safeContent.includes('>')) {
+                contentDiv.innerHTML = `<div class="message-text">${safeContent}</div>`;
+            } else {
+                contentDiv.innerHTML = `<div class="message-text">${marked.parse(safeContent)}</div>`;
+            }
+            
+            if (sources && sources.length > 0) {
+                const srcDiv = document.createElement('div');
+                srcDiv.className = 'sources';
+                srcDiv.innerHTML = '<strong>Sources:</strong><br>' + 
+                    sources.map(s => `<a href="${s.url}" target="_blank">${s.title}</a>`).join('<br>');
+                contentDiv.appendChild(srcDiv);
+            }
+            
+            const copyBtn = document.createElement('button');
+            copyBtn.className = 'copy-btn';
+            copyBtn.innerHTML = '📋 Copy';
+            copyBtn.onclick = function() {
+                const text = contentDiv.innerText || contentDiv.textContent;
+                navigator.clipboard.writeText(text);
+                copyBtn.innerHTML = '✅ Copied';
+                setTimeout(() => copyBtn.innerHTML = '📋 Copy', 2000);
+            };
+            contentDiv.appendChild(copyBtn);
+            
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+            messagesDiv.appendChild(messageDiv);
+            messageDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function addLoading() {
             const container = document.getElementById('messages');
             const id = 'loading-' + Date.now();
             const div = document.createElement('div');
             div.id = id;
-            div.className = 'message assistant';
+            div.className = 'message assistant-message';
             div.innerHTML = `
                 <div class="message-avatar">🤖</div>
                 <div class="message-content">
-                    <div class="loading-dots">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                    </div>
+                    <div class="loading-dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
                 </div>
             `;
             container.appendChild(div);
-            setTimeout(() => div.scrollIntoView({ behavior: 'smooth', block: 'end' }), 100);
             return id;
         }
 
@@ -711,139 +1142,188 @@
         }
 
         // =========================
-        // Copy Text
+        // File Upload Logic
         // =========================
-        function copyText(text, btn) {
-            text = text.replace(/\\'/g, "'").replace(/\\n/g, '\n');
-            navigator.clipboard.writeText(text).then(() => {
-                const orig = btn.textContent;
-                btn.textContent = '✅ Copied!';
-                setTimeout(() => btn.textContent = orig, 2000);
-            }).catch(() => alert('Copy failed'));
-        }
-
-        // =========================
-        // File Upload Functions
-        // =========================
-        // File upload button in header
         document.querySelector('.header-title').insertAdjacentHTML('afterend', `
-            <button class="theme-btn" onclick="showUpload()" style="margin-right: 10px;" title="Upload Document">
-                📎
-            </button>
+            <button class="theme-btn" onclick="showUpload()" style="margin-right: 10px;" title="Upload Document">📎</button>
         `);
 
-        function showUpload() {
-            document.getElementById('fileUploadArea').style.display = 'flex';
-            loadFilesList();
-        }
+        function showUpload() { document.getElementById('fileUploadArea').style.display = 'flex'; loadFilesList(); }
+        function closeUpload() { document.getElementById('fileUploadArea').style.display = 'none'; }
 
-        function closeUpload() {
-            document.getElementById('fileUploadArea').style.display = 'none';
+        // Drag and Drop functionality
+        const dropZone = document.getElementById('dropZone');
+        
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, preventDefaults, false);
+        });
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
         }
-
-        // Handle file upload
-        document.addEventListener('DOMContentLoaded', function() {
-            const fileInput = document.getElementById('fileInput');
-            if (fileInput) {
-                fileInput.addEventListener('change', async function(e) {
-                    const file = e.target.files[0];
-                    if (!file) return;
-                    
-                    const formData = new FormData();
-                    formData.append('file', file);
-                    
-                    const status = document.getElementById('uploadStatus');
-                    status.textContent = 'Uploading...';
-                    status.className = '';
-                    status.style.display = 'block';
-                    
-                    try {
-                        const response = await fetch('/api/upload', {
-                            method: 'POST',
-                            body: formData
-                        });
-                        
-                        const data = await response.json();
-                        
-                        if (data.success) {
-                            status.textContent = `✅ ${data.filename} uploaded successfully!`;
-                            status.className = 'success';
-                            loadFilesList();
-                            
-                            // Ask if user wants to analyze
-                            setTimeout(() => {
-                                const analyze = confirm(`Analyze ${data.filename}?`);
-                                if (analyze) {
-                                    analyzeDocument(data.file_path, `Analyze this document: ${data.filename}`);
-                                }
-                            }, 1000);
-                        } else {
-                            throw new Error('Upload failed');
-                        }
-                    } catch (error) {
-                        status.textContent = `❌ Error: ${error.message}`;
-                        status.className = 'error';
-                    }
-                });
+        
+        ['dragenter', 'dragover'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.add('drag-over'), false);
+        });
+        
+        ['dragleave', 'drop'].forEach(eventName => {
+            dropZone.addEventListener(eventName, () => dropZone.classList.remove('drag-over'), false);
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFileUpload(files[0]);
             }
         });
+        
+        document.getElementById('fileInput').addEventListener('change', async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            handleFileUpload(file);
+        });
+        
+        async function handleFileUpload(file) {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const status = document.getElementById('uploadStatus');
+            status.className = 'uploading';
+            status.textContent = '⏳ Uploading and processing...';
+            
+            try {
+                const response = await fetch('/api/upload', { method: 'POST', body: formData });
+                const data = await response.json();
+                if (data.success) {
+                    status.className = 'success';
+                    status.textContent = `✅ ${data.filename} uploaded successfully!`;
+                    
+                    // CLEAR OLD FILE DATA BEFORE STORING NEW FILE
+                    window.lastUploadedFile = null;
+                    
+                    // Store the new file path
+                    window.lastUploadedFile = {
+                        filename: data.filename,
+                        path: data.file_path  // This should be the full path
+                    };
+                    
+                    // RESET FILE INPUT SO SAME FILE CAN BE UPLOADED AGAIN
+                    document.getElementById('fileInput').value = '';
+                    
+                    addMessage('assistant', `✅ File uploaded and processed: ${data.filename}\n\n✨ **Document has been indexed using AI embeddings**\n- The file will be automatically searched for relevant content when you ask questions\n- You can ask multiple questions about the same document\n- Semantic search ensures you get the most relevant information\n\n💡 **Try asking:**\n- "Summarize the key points"\n- "What are the main findings?"\n- "Extract important data from this document"`);
+                    loadFilesList();
+                    updateAttachmentIndicator();
+                } else {
+                    throw new Error(data.message || 'Upload failed');
+                }
+            } catch (err) { 
+                status.className = 'error';
+                status.textContent = `❌ Upload failed: ${err.message}`; 
+                addMessage('assistant', `❌ Upload failed: ${err.message}`);
+            }
+        }
+        
+        // Update attachment indicator
+        function updateAttachmentIndicator() {
+            const messageInput = document.getElementById('messageInput');
+            const existingIndicator = document.getElementById('attachmentIndicator');
+            
+            if (existingIndicator) {
+                existingIndicator.remove();
+            }
+            
+            if (window.lastUploadedFile) {
+                const indicator = document.createElement('div');
+                indicator.id = 'attachmentIndicator';
+                const fileExt = window.lastUploadedFile.filename.split('.').pop().toUpperCase();
+                indicator.innerHTML = `
+                    <div class="file-name">
+                        <span>📎</span>
+                        <span>${window.lastUploadedFile.filename}</span>
+                        <span class="file-badge">${fileExt}</span>
+                    </div>
+                    <button onclick="clearAttachment()" title="Remove attachment">✕</button>
+                `;
+                messageInput.parentElement.insertBefore(indicator, messageInput);
+            }
+        }
+        
+        // Clear attachment
+        function clearAttachment() {
+            window.lastUploadedFile = null;
+            updateAttachmentIndicator();
+            addMessage('assistant', '📎 Attachment cleared.');
+        }
 
         async function loadFilesList() {
             try {
-                const response = await fetch('/api/files');
-                const data = await response.json();
-                
-                const filesList = document.getElementById('filesList');
+                const res = await fetch('/api/files');
+                const data = await res.json();
+                const list = document.getElementById('filesList');
                 if (data.files && data.files.length > 0) {
-                    filesList.innerHTML = '<h4>Uploaded Files:</h4>' + 
-                        data.files.map(f => `
-                            <div style="padding: 0.5rem; background: #3e3e3e; margin: 0.5rem 0; border-radius: 6px;">
-                                📄 ${f.name} 
-                                <button onclick="analyzeDocument('${f.path}', 'Summarize this document')" 
-                                        style="float: right; padding: 0.25rem 0.5rem; background: #19c37d; border: none; border-radius: 4px; cursor: pointer;">
-                                    Analyze
-                                </button>
-                            </div>
-                        `).join('');
+                    list.innerHTML = '<div style="margin: 1rem 0 0.5rem; opacity: 0.7; font-size: 0.9rem;">📚 Uploaded Documents</div>' + 
+                        (data.files || []).map(f => {
+                            const ext = f.name.split('.').pop().toUpperCase();
+                            return `
+                                <div class="file-item">
+                                    <div class="file-info">
+                                        <span>📄</span>
+                                        <span>${f.name}</span>
+                                        <span style="opacity: 0.6; font-size: 0.8rem;">${ext}</span>
+                                    </div>
+                                </div>
+                            `;
+                        }).join('');
                 } else {
-                    filesList.innerHTML = '<p style="color: #666;">No files uploaded yet</p>';
+                    list.innerHTML = '<div style="text-align: center; opacity: 0.5; padding: 1rem;">No documents uploaded yet</div>';
                 }
-            } catch (error) {
-                console.error('Error loading files:', error);
+            } catch (e) {
+                console.error('Error loading files:', e);
             }
         }
 
-        async function analyzeDocument(filePath, query) {
+        async function analyzeDocument(path, query) {
+            // If called from file list, use the provided path
+            // Otherwise, use the last uploaded file
+            if (!path && window.lastUploadedFile) {
+                path = window.lastUploadedFile.path;
+            }
+            
+            if (!path) {
+                addMessage('assistant', '❌ Please upload a document first');
+                return;
+            }
+            
             closeUpload();
-            
             isProcessing = true;
-            document.getElementById('sendBtn').disabled = true;
-            document.getElementById('welcomeScreen').style.display = 'none';
-            document.getElementById('messages').classList.add('active');
-            
             addMessage('user', query);
-            const loadingId = addLoading();
+            const lid = addLoading();
             
             try {
-                const response = await fetch('/api/analyze-document', {
+                const res = await fetch('/api/analyze-document', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ file_path: filePath, query: query })
+                    body: JSON.stringify({ file_path: path, query: query })
                 });
+                const data = await res.json();
+                removeLoading(lid);
                 
-                const data = await response.json();
-                removeLoading(loadingId);
-                addMessage('assistant', data.analysis, data.sources);
-            } catch (error) {
-                removeLoading(loadingId);
-                addMessage('assistant', `❌ Error analyzing document: ${error.message}`);
-            } finally {
-                isProcessing = false;
-                document.getElementById('sendBtn').disabled = false;
+                if (data.success) {
+                    let message = data.analysis;
+                    if (data.pages_analyzed) {
+                        message = `📄 Analyzed ${data.pages_analyzed} pages from ${data.filename}\n\n${message}`;
+                    }
+                    addMessage('assistant', message, data.sources || []);
+                } else {
+                    addMessage('assistant', `❌ Analysis failed: ${data.detail || 'Unknown error'}`);
+                }
+            } catch (e) { 
+                removeLoading(lid); 
+                addMessage('assistant', `❌ Error: ${e.message}`);
             }
+            finally { isProcessing = false; }
         }
-
-        console.log('✅ All systems ready!');
     </script>
 </body>
 </html>
