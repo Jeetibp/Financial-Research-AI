@@ -220,10 +220,9 @@ User: "Analyze TCS financial performance and compare with Infosys"
 - **Markdown**: Report formatting
 
 ### Development & Deployment
-- **Docker**: Containerization
-- **Docker Compose**: Multi-container orchestration
 - **Git**: Version control
 - **Logging**: Custom logger with file rotation
+- **Environment Variables**: .env configuration
 
 ---
 
@@ -234,41 +233,32 @@ financial_research_agent/
 │
 ├── src/                              # Source code
 │   ├── agents/                       # AI Agents
+│   │   ├── __init__.py              # Package initialization
 │   │   ├── base_agent.py            # Abstract base agent
 │   │   ├── research_agent.py        # General research agent
-│   │   ├── it_sector_agent.py       # IT sector specialist
-│   │   ├── pharma_sector_agent.py   # Pharma sector specialist
 │   │   ├── query_classifier.py      # Query complexity classifier
 │   │   ├── query_router.py          # Agent routing logic
 │   │   ├── research_planner.py      # Multi-step research planner
-│   │   ├── deep_research_executor.py # Deep research orchestrator
-│   │   └── orchestrator.py          # Multi-agent coordinator
+│   │   └── deep_research_executor.py # Deep research orchestrator
 │   │
 │   ├── core/                         # Core functionality
+│   │   ├── __init__.py              # Package initialization
 │   │   ├── llm_client.py            # OpenAI GPT-4o client
 │   │   ├── api_client.py            # External API integrations
-│   │   ├── research_engine.py       # Research logic
-│   │   ├── report_generator.py      # Report creation
-│   │   ├── plan_generator.py        # Research plan generator
-│   │   └── query_router.py          # Query routing
+│   │   └── report_generator.py      # Report creation
 │   │
 │   ├── data/                         # Data processing
+│   │   ├── __init__.py              # Package initialization
 │   │   ├── vector_store.py          # ChromaDB vector store
-│   │   ├── document_processor.py    # Document chunking & embedding
-│   │   ├── ingestion.py             # Data ingestion pipeline
-│   │   ├── preprocessing.py         # Data preprocessing
-│   │   └── schemas.py               # Data models
+│   │   └── document_processor.py    # Document chunking & embedding
 │   │
 │   ├── tools/                        # Agent tools
-│   │   ├── rag_retrieval.py         # RAG search tool
-│   │   ├── web_search.py            # Web search tool
-│   │   └── financial_api.py         # Financial data API
+│   │   └── __init__.py              # Package initialization
 │   │
 │   ├── utils/                        # Utilities
+│   │   ├── __init__.py              # Package initialization
 │   │   ├── logger.py                # Logging configuration
 │   │   ├── validators.py            # Input validation
-│   │   ├── formatters.py            # Output formatting
-│   │   ├── parsers.py               # Data parsers
 │   │   ├── pdf_parser.py            # Enhanced PDF parser (Vision AI)
 │   │   ├── financial_calculator.py  # Financial metrics calculator
 │   │   ├── smart_calculator.py      # Smart calculator with web search
@@ -279,68 +269,32 @@ financial_research_agent/
 │   │   └── web_scraper.py           # Web content scraper
 │   │
 │   ├── config/                       # Configuration
+│   │   ├── __init__.py              # Package initialization
 │   │   ├── settings.py              # Application settings
 │   │   ├── settings.yaml            # YAML configuration
-│   │   ├── config.py                # Config loader
-│   │   ├── prompts.py               # LLM prompts
-│   │   └── agent_configs.py         # Agent configurations
+│   │   └── config.py                # Config loader
 │   │
-│   └── api.py                        # FastAPI application
+│   ├── __init__.py                  # Source package initialization
+│   └── api.py                        # FastAPI application (main entry point)
 │
 ├── static/                           # Frontend files
 │   ├── index.html                    # Main chat interface
 │   ├── user-guide.html              # User guide
-│   ├── css/style.css                # Styling
-│   └── js/                          # JavaScript files
+│   └── css/
+│       └── style.css                # Styling
 │
-├── data/                             # Data storage
+├── data/                             # Data storage (local, not tracked)
 │   ├── raw/                         # Raw documents
-│   │   ├── it_sector/               # IT sector documents
-│   │   └── pharma_sector/           # Pharma sector documents
 │   ├── processed/                   # Processed data
 │   ├── vector_store/                # ChromaDB storage
-│   ├── vector_db/                   # Vector database
 │   └── cache/                       # Cached results
 │
-├── notebooks/                        # Jupyter notebooks
-│   ├── 01_data_exploration.ipynb    # Data exploration
-│   ├── 02_prototype_search.ipynb    # Search prototyping
-│   ├── 03_rag_testing.ipynb         # RAG testing
-│   ├── 04_agent_development.ipynb   # Agent development
-│   ├── 05_pharma_agent.ipynb        # Pharma agent testing
-│   ├── 06_unified_router.ipynb      # Router testing
-│   └── evaluation.ipynb             # System evaluation
-│
-├── outputs/                          # Generated outputs
-│   ├── reports/                     # Research reports
-│   ├── logs/                        # Application logs
-│   ├── metrics/                     # Performance metrics
-│   └── cache/                       # Output cache
-│
-├── deployment/                       # Deployment files
-│   ├── docker/                      # Docker configurations
-│   │   ├── Dockerfile               # Docker image
-│   │   └── docker-compose.yml       # Multi-container setup
-│   └── scripts/                     # Deployment scripts
-│
-├── scripts/                          # Utility scripts
-│   ├── ingest_documents.py          # Document ingestion
-│   └── build_vector_db.py           # Vector DB builder
-│
-├── tests/                            # Test suite
-│   ├── unit/                        # Unit tests
-│   ├── integration/                 # Integration tests
-│   └── e2e/                         # End-to-end tests
-│
-├── docs/                             # Documentation
-│   ├── architecture.md              # Architecture details
-│   └── setup_guide.md               # Setup instructions
-│
-├── monitoring/                       # Monitoring & observability
-│   ├── logger.py                    # Custom logger
-│   ├── metrics.py                   # Metrics collector
-│   └── tracer.py                    # Distributed tracing
-│
+├── logs/                             # Application logs (local, not tracked)
+├── outputs/                          # Generated outputs (local, not tracked)
+└── uploads/                          # Uploaded files (local, not tracked)
+
+├── .env.example                      # Environment variables template
+├── .gitignore                        # Git ignore rules
 ├── requirements.txt                  # Python dependencies
 ├── README.md                         # This file
 ├── QUICK_START.md                    # Quick start guide
@@ -413,11 +367,11 @@ CACHE_ENABLED=true
 If you want to use RAG with your own documents:
 
 ```bash
-# Add documents to data/raw/it_sector/ or data/raw/pharma_sector/
-python scripts/ingest_documents.py
+# Create data directories
+mkdir -p data/raw data/processed data/vector_store
 
-# Build vector database
-python scripts/build_vector_db.py
+# Add your documents to data/raw/
+# The application will process them automatically on first upload
 ```
 
 ### Step 6: Start the Server
@@ -656,66 +610,6 @@ Visit http://127.0.0.1:8000/docs for:
 
 ---
 
-## 🧪 Testing
-
-### Run Unit Tests
-```bash
-pytest tests/unit/
-```
-
-### Run Integration Tests
-```bash
-pytest tests/integration/
-```
-
-### Run End-to-End Tests
-```bash
-pytest tests/e2e/
-```
-
-### Test Coverage
-```bash
-pytest --cov=src tests/
-```
-
----
-
-## 🐳 Docker Deployment
-
-### Build Docker Image
-```bash
-cd deployment/docker
-docker build -t financial-research-ai .
-```
-
-### Run with Docker Compose
-```bash
-docker-compose up -d
-```
-
-This will start:
-- FastAPI application
-- ChromaDB service
-- Nginx reverse proxy (optional)
-
----
-
-## 📊 Performance Metrics
-
-### Average Response Times
-- **INSTANT queries**: < 2 seconds
-- **SIMPLE queries**: 3-5 seconds
-- **COMPLEX queries**: 10-20 seconds
-- **DEEP research**: 30-60 seconds
-
-### Accuracy
-- **Stock data**: 100% (real-time from Yahoo Finance)
-- **Financial calculations**: 99%+ (programmatic)
-- **Document extraction**: 95%+ (with Vision AI)
-- **Research synthesis**: 90%+ (GPT-4o powered)
-
----
-
 ## 🔒 Security & Privacy
 
 - **API Key Protection**: Environment variables, never committed
@@ -781,11 +675,12 @@ For issues, questions, or suggestions:
 
 ## 🗺️ Roadmap
 
-### Version 2.1 (Current Sprint)
-- [ ] Enhanced error handling
+### Version 2.1 (Planned)
+- [ ] Docker containerization for easy deployment
+- [ ] Comprehensive test suite (unit, integration, e2e)
+- [ ] Enhanced error handling and monitoring
 - [ ] Better caching strategies
 - [ ] Performance optimizations
-- [ ] Additional unit tests
 
 ### Version 3.0 (Future)
 - [ ] Support for more exchanges (Hong Kong, Shanghai)
@@ -795,6 +690,7 @@ For issues, questions, or suggestions:
 - [ ] Mobile app (React Native)
 - [ ] Voice input support
 - [ ] Automated email reports
+- [ ] API rate limiting and authentication
 
 ---
 
